@@ -1,7 +1,7 @@
 package br.ufal.ic.jackut.controller;
 
-import br.ufal.ic.jackut.model.Usuario;
 import br.ufal.ic.jackut.exception.*;
+import br.ufal.ic.jackut.model.Usuario;
 
 import java.io.*;
 import java.util.HashMap;
@@ -166,6 +166,50 @@ public class SistemaJackut {
         sb.append("}");
 
         return sb.toString();
+    }
+
+    /*
+    * US4
+    * */
+
+    public void enviarRecado(String idSessao, String loginDestinatario, String textoRecado)
+            throws UsuarioNaoCadastradoException, AutoEnvioRecadoException {
+
+        // 1. Recupera o remetente através da sessão ativa
+        String LoginRemetente = sessoesAtivas.get(idSessao);
+        if (LoginRemetente == null) {
+            // Caso a sessão seja inválida ou não encontrada (ajuste conforme o tratamento geral do sistema)
+            throw new UsuarioNaoCadastradoException();
+        }
+
+        // 2. Valida se o destinatário existe no sistema
+        Usuario destinatario = usuarios.get(loginDestinatario);
+        if (destinatario == null) {
+            throw new UsuarioNaoCadastradoException();
+        }
+
+        // 3. Valida se o remetente não está enviando para si mesmo
+        if (LoginRemetente.equals(loginDestinatario)) {
+            throw new AutoEnvioRecadoException();
+        }
+
+        destinatario.receberRecado(textoRecado);
+    }
+
+
+
+    public String lerRecado(String idSessao) throws NaoHaRecadosException, UsuarioNaoCadastradoException {
+        // 1. Recupera o LOGIN do usuário dono da sessão
+        String loginUsuario = sessoesAtivas.get(idSessao);
+        if (loginUsuario == null) {
+            throw new UsuarioNaoCadastradoException();
+        }
+
+        // 2. Busca o objeto Usuario real no mapa de usuários
+        Usuario usuario = usuarios.get(loginUsuario);
+
+        // 3. Delega a leitura para a fila interna do usuário
+        return usuario.lerProximoRecado();
     }
 
 

@@ -21,7 +21,6 @@ public class Facade {
         return sistema.getAtributoUsuario(login, atributo);
     }
 
-    // --- NOVO MÉTODO PARA A US2_1 ---
     public void editarPerfil(String idSessao, String atributo, String valor) throws Exception {
         sistema.editarPerfil(idSessao, atributo, valor);
     }
@@ -40,5 +39,13 @@ public class Facade {
 
     public String getAmigos(String login) {
         return sistema.getAmigos(login);
+    }
+
+    public void enviarRecado(String id, String destinatario, String recado) throws Exception {
+        sistema.enviarRecado(id, destinatario, recado);
+    }
+
+    public String lerRecado(String id) throws Exception {
+        return sistema.lerRecado(id);
     }
 }

@@ -3,6 +3,7 @@ package br.ufal.ic.jackut.model;
 import br.ufal.ic.jackut.exception.AtributoNaoPreenchidoException;
 import br.ufal.ic.jackut.exception.LoginInvalidoException;
 import br.ufal.ic.jackut.exception.SenhaInvalidaException;
+
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.LinkedHashSet;
@@ -16,6 +17,7 @@ public class Usuario implements Serializable {
     private String senha;
     private String nome;
     private Map<String, String> perfil;
+    private final java.util.Queue<String> muralDeRecados = new java.util.LinkedList<>();
 
 
     private Set<String> amigos;
@@ -75,6 +77,19 @@ public class Usuario implements Serializable {
 
     public Set<String> getConvitesEnviados() {
         return convitesEnviados;
+    }
+
+    // --- Métodos da US4_1
+
+    public void receberRecado(String recado) {
+        this.muralDeRecados.add(recado);
+    }
+
+    public String lerProximoRecado() throws br.ufal.ic.jackut.exception.NaoHaRecadosException {
+        if (this.muralDeRecados.isEmpty()) {
+            throw new br.ufal.ic.jackut.exception.NaoHaRecadosException();
+        }
+        return this.muralDeRecados.poll(); // Remove e retorna o topo da fila
     }
 
     // --- Getters e Setters Básicos ---
