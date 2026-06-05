@@ -9,5 +9,7 @@ public class Main {
         // Executa os testes sequencialmente no IntelliJ
         EasyAccept.main(new String[] { facadeClass, "src/tests/us1_1.txt" });
         EasyAccept.main(new String[] { facadeClass, "src/tests/us1_2.txt" });
+        EasyAccept.main(new String[] { facadeClass, "src/tests/us2_1.txt" });
+        EasyAccept.main(new String[] { facadeClass, "src/tests/us2_2.txt" });
     }
 }

@@ -39,16 +39,18 @@ public class SistemaJackut {
         return idSessao;
     }
 
-    public String getAtributoUsuario(String login, String atributo) throws UsuarioNaoCadastradoException {
+    /**
+     * US2_1: Atualização do método antigo. Agora ele busca atributos dinâmicos do perfil
+     * se o usuário existir no sistema.
+     */
+    public String getAtributoUsuario(String login, String atributo) throws UsuarioNaoCadastradoException, AtributoNaoPreenchidoException {
         Usuario usuario = usuarios.get(login);
         if (usuario == null) {
             throw new UsuarioNaoCadastradoException();
         }
 
-        if ("nome".equalsIgnoreCase(atributo)) {
-            return usuario.getNome();
-        }
-        return "";
+        // Busca o valor dentro do mapa dinâmico do usuário
+        return usuario.getAtributoPerfil(atributo);
     }
 
     public void zerarSistema() {
@@ -71,6 +73,25 @@ public class SistemaJackut {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    /**
+     * US2_1: Altera um atributo do perfil do usuário mascarado pela sessão atual.
+     */
+    public void editarPerfil(String idSessao, String atributo, String valor) throws Exception {
+        // Se o ID for inválido, nulo ou vazio, o script espera "Usuário não cadastrado."
+        if (idSessao == null || idSessao.trim().isEmpty() || !sessoesAtivas.containsKey(idSessao)) {
+            throw new UsuarioNaoCadastradoException();
+        }
+
+        String loginUsuario = sessoesAtivas.get(idSessao);
+
+        if (atributo == null || atributo.trim().isEmpty() || valor == null || valor.trim().isEmpty()) {
+            throw new AtributoNaoPreenchidoException();
+        }
+
+        Usuario usuario = usuarios.get(loginUsuario);
+        usuario.alterarPerfil(atributo, valor);
     }
 
     @SuppressWarnings("unchecked")

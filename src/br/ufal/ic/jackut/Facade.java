@@ -21,6 +21,11 @@ public class Facade {
         return sistema.getAtributoUsuario(login, atributo);
     }
 
+    // --- NOVO MÉTODO PARA A US2_1 ---
+    public void editarPerfil(String idSessao, String atributo, String valor) throws Exception {
+        sistema.editarPerfil(idSessao, atributo, valor);
+    }
+
     public void encerrarSistema() {
         sistema.encerrarSistema();
     }
