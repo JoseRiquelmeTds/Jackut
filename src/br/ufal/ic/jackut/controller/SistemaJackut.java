@@ -6,6 +6,7 @@ import br.ufal.ic.jackut.exception.*;
 import java.io.*;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
 
 public class SistemaJackut {
@@ -93,6 +94,80 @@ public class SistemaJackut {
         Usuario usuario = usuarios.get(loginUsuario);
         usuario.alterarPerfil(atributo, valor);
     }
+
+    /**
+     * US3_1
+     */
+    public void adicionarAmigo(String idSessao, String amigo) throws Exception {
+        if (idSessao == null || idSessao.trim().isEmpty() || !sessoesAtivas.containsKey(idSessao)) {
+            throw new UsuarioNaoCadastradoException();
+        }
+
+        String loginRemetente = sessoesAtivas.get(idSessao);
+
+        if (amigo == null || amigo.trim().isEmpty() || !usuarios.containsKey(amigo)) {
+            throw new UsuarioNaoCadastradoException();
+        }
+
+        if (loginRemetente.equals(amigo)) {
+            throw new AutoAdicaoAmigoException();
+        }
+
+        Usuario remetente = usuarios.get(loginRemetente);
+        Usuario destinatario = usuarios.get(amigo);
+
+        if (remetente.getAmigos().contains(amigo)) {
+            throw new AmigoJaAdicionadoException();
+        }
+
+        if (remetente.getConvitesEnviados().contains(amigo)) {
+            throw new AmigoEsperandoAceitacaoException();
+        }
+
+        if (destinatario.getConvitesEnviados().contains(loginRemetente)) {
+            destinatario.getConvitesEnviados().remove(loginRemetente);
+            remetente.getAmigos().add(amigo);
+            destinatario.getAmigos().add(loginRemetente);
+        } else {
+            remetente.getConvitesEnviados().add(amigo);
+        }
+    }
+
+    /**
+     * US3: Verifica se dois usuários são amigos.
+     */
+    public boolean ehAmigo(String login, String amigo) {
+        if (!usuarios.containsKey(login)) {
+            return false;
+        }
+        return usuarios.get(login).getAmigos().contains(amigo);
+    }
+
+    /**
+     * US3: Retorna a lista de amigos formatada como String no padrão {amigo1,amigo2}
+     */
+    public String getAmigos(String login) {
+        if (!usuarios.containsKey(login)) {
+            return "{}";
+        }
+
+        Set<String> listaAmigos = usuarios.get(login).getAmigos();
+        if (listaAmigos.isEmpty()) {
+            return "{}";
+        }
+
+        // Converte a coleção para o formato "amigo1,amigo2"
+        StringBuilder sb = new StringBuilder("{");
+        for (String nomeAmigo : listaAmigos) {
+            sb.append(nomeAmigo).append(",");
+        }
+        // Remove a última vírgula sobressalente e fecha com chaves
+        sb.deleteCharAt(sb.length() - 1);
+        sb.append("}");
+
+        return sb.toString();
+    }
+
 
     @SuppressWarnings("unchecked")
     private void carregarDados() {

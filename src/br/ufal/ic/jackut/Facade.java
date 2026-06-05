@@ -29,4 +29,16 @@ public class Facade {
     public void encerrarSistema() {
         sistema.encerrarSistema();
     }
+
+    public void adicionarAmigo(String id, String amigo) throws Exception {
+        sistema.adicionarAmigo(id, amigo);
+    }
+
+    public boolean ehAmigo(String login, String amigo) {
+        return sistema.ehAmigo(login, amigo);
+    }
+
+    public String getAmigos(String login) {
+        return sistema.getAmigos(login);
+    }
 }

@@ -5,7 +5,9 @@ import br.ufal.ic.jackut.exception.LoginInvalidoException;
 import br.ufal.ic.jackut.exception.SenhaInvalidaException;
 import java.io.Serializable;
 import java.util.HashMap;
+import java.util.LinkedHashSet;
 import java.util.Map;
+import java.util.Set;
 
 public class Usuario implements Serializable {
     private static final long serialVersionUID = 1L;
@@ -13,9 +15,11 @@ public class Usuario implements Serializable {
     private String login;
     private String senha;
     private String nome;
-
-    // Mapa dinâmico para armazenar os atributos do perfil (US2_1)
     private Map<String, String> perfil;
+
+
+    private Set<String> amigos;
+    private Set<String> convitesEnviados;
 
     public Usuario(String login, String senha, String nome) throws LoginInvalidoException, SenhaInvalidaException {
         if (login == null || login.trim().isEmpty()) {
@@ -26,9 +30,10 @@ public class Usuario implements Serializable {
         }
         this.login = login;
         this.senha = senha;
-        // Se o nome vier nulo ou vazio, garanta que salve como ""
         this.nome = (nome == null) ? "" : nome;
         this.perfil = new HashMap<>();
+        this.amigos = new LinkedHashSet<>();
+        this.convitesEnviados = new LinkedHashSet<>();
     }
 
     // --- Métodos da US2_1 ---
@@ -56,6 +61,20 @@ public class Usuario implements Serializable {
         } else {
             perfil.put(atributo, valor);
         }
+    }
+
+    // --- Métodos da US3_1 ---
+
+    public void adicionarAmigoConfirmado(String loginAmigo) {
+        this.amigos.add(loginAmigo);
+    }
+
+    public Set<String> getAmigos() {
+        return amigos;
+    }
+
+    public Set<String> getConvitesEnviados() {
+        return convitesEnviados;
     }
 
     // --- Getters e Setters Básicos ---
