@@ -4,7 +4,7 @@ public class ContaJaExisteException extends JackutException {
     private static final long serialVersionUID = 1L;
 
     public ContaJaExisteException() {
-        super("Conta com esse nome j\u00e1 existe.");
+        super("Conta com esse nome já existe.");
     }
 
     public ContaJaExisteException(String message) {
