@@ -38,7 +38,7 @@ public class Usuario implements Serializable {
         this.convitesEnviados = new LinkedHashSet<>();
     }
 
-    // --- Métodos da US2_1 ---
+    // --- M\u00e9todos da US2_1 ---
 
     public String getAtributoPerfil(String atributo) throws AtributoNaoPreenchidoException {
         if ("nome".equalsIgnoreCase(atributo)) {
@@ -53,7 +53,7 @@ public class Usuario implements Serializable {
     }
 
     /**
-     * Altera ou adiciona dinamicamente um atributo ao perfil do usuário.
+     * Altera ou adiciona dinamicamente um atributo ao perfil do usu\u00e1rio.
      */
     public void alterarPerfil(String atributo, String valor) {
         if ("nome".equalsIgnoreCase(atributo)) {
@@ -63,7 +63,7 @@ public class Usuario implements Serializable {
         }
     }
 
-    // --- Métodos de Encapsulamento de Amigos e Convites ---
+    // --- M\u00e9todos de Encapsulamento de Amigos e Convites ---
 
     public boolean temConviteEnviadoPara(String loginAmigo) {
         return convitesEnviados.contains(loginAmigo);
@@ -98,7 +98,7 @@ public class Usuario implements Serializable {
         return Collections.unmodifiableSet(convitesEnviados);
     }
 
-    // --- Métodos da US4_1 ---
+    // --- M\u00e9todos da US4_1 ---
 
     public void receberRecado(String recado) {
         this.muralDeRecados.add(recado);
@@ -111,7 +111,7 @@ public class Usuario implements Serializable {
         return this.muralDeRecados.poll();
     }
 
-    // --- Getters e Setters Básicos ---
+    // --- Getters e Setters B\u00e1sicos ---
     public String getLogin() {
         return login;
     }

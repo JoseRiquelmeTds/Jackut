@@ -4,7 +4,7 @@ public class UsuarioNaoEncontradoException extends JackutException {
     private static final long serialVersionUID = 1L;
 
     public UsuarioNaoEncontradoException() {
-        super("Usuário não encontrado.");
+        super("Usu\u00e1rio n\u00e3o encontrado.");
     }
 
     public UsuarioNaoEncontradoException(String message) {

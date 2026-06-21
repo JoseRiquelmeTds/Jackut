@@ -4,7 +4,7 @@ public class NaoHaRecadosException extends JackutException {
     private static final long serialVersionUID = 1L;
 
     public NaoHaRecadosException() {
-        super("Não há recados.");
+        super("N\u00e3o h\u00e1 recados.");
     }
 
     public NaoHaRecadosException(String message) {

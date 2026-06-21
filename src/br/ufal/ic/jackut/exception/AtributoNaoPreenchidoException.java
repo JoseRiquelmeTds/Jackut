@@ -4,7 +4,7 @@ public class AtributoNaoPreenchidoException extends JackutException {
     private static final long serialVersionUID = 1L;
 
     public AtributoNaoPreenchidoException() {
-        super("Atributo não preenchido.");
+        super("Atributo n\u00e3o preenchido.");
     }
 
     public AtributoNaoPreenchidoException(String message) {

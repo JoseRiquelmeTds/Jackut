@@ -4,7 +4,7 @@ public class PerfilNaoCriadoException extends JackutException {
     private static final long serialVersionUID = 1L;
 
     public PerfilNaoCriadoException() {
-        super("Perfil não criado.");
+        super("Perfil n\u00e3o criado.");
     }
 
     public PerfilNaoCriadoException(String message) {

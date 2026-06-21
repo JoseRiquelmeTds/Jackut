@@ -4,7 +4,7 @@ public class LoginInvalidoException extends JackutException {
     private static final long serialVersionUID = 1L;
 
     public LoginInvalidoException() {
-        super("Login inválido.");
+        super("Login inv\u00e1lido.");
     }
 
     public LoginInvalidoException(String message) {

@@ -4,7 +4,7 @@ public class AmigoJaAdicionadoException extends JackutException {
     private static final long serialVersionUID = 1L;
 
     public AmigoJaAdicionadoException() {
-        super("Usuário já está adicionado como amigo.");
+        super("Usu\u00e1rio j\u00e1 est\u00e1 adicionado como amigo.");
     }
 
     public AmigoJaAdicionadoException(String message) {

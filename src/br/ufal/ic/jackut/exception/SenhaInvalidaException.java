@@ -4,7 +4,7 @@ public class SenhaInvalidaException extends JackutException {
     private static final long serialVersionUID = 1L;
 
     public SenhaInvalidaException() {
-        super("Senha inválida.");
+        super("Senha inv\u00e1lida.");
     }
 
     public SenhaInvalidaException(String message) {

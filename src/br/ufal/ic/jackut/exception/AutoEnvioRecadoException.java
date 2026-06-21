@@ -4,7 +4,7 @@ public class AutoEnvioRecadoException extends JackutException {
     private static final long serialVersionUID = 1L;
 
     public AutoEnvioRecadoException() {
-        super("Usuário não pode enviar recado para si mesmo.");
+        super("Usu\u00e1rio n\u00e3o pode enviar recado para si mesmo.");
     }
 
     public AutoEnvioRecadoException(String message) {
