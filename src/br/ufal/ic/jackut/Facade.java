@@ -1,51 +1,65 @@
 package br.ufal.ic.jackut;
 
-import br.ufal.ic.jackut.controller.SistemaJackut;
+import br.ufal.ic.jackut.exception.*;
+import br.ufal.ic.jackut.repository.UsuarioRepository;
+import br.ufal.ic.jackut.service.*;
 
 public class Facade {
-    private SistemaJackut sistema = new SistemaJackut();
+    private final UsuarioRepository usuarioRepository = new UsuarioRepository();
+    private final SessaoService sessaoService = new SessaoService(usuarioRepository);
+    private final UsuarioService usuarioService = new UsuarioService(usuarioRepository, sessaoService);
+    private final AmizadeService amizadeService = new AmizadeService(usuarioRepository, sessaoService);
+    private final RecadoService recadoService = new RecadoService(usuarioRepository, sessaoService);
 
     public void zerarSistema() {
-        sistema.zerarSistema();
+        usuarioRepository.limpar();
+        sessaoService.limparSessoes();
     }
 
-    public void criarUsuario(String login, String senha, String nome) throws Exception {
-        sistema.criarUsuario(login, senha, nome);
+    public void criarUsuario(String login, String senha, String nome)
+            throws ContaJaExisteException, LoginInvalidoException, SenhaInvalidaException {
+        usuarioService.criarUsuario(login, senha, nome);
     }
 
-    public String abrirSessao(String login, String senha) throws Exception {
-        return sistema.abrirSessao(login, senha);
+    public String abrirSessao(String login, String senha)
+            throws LoginOuSenhaInvalidoException {
+        return sessaoService.abrirSessao(login, senha);
     }
 
-    public String getAtributoUsuario(String login, String atributo) throws Exception {
-        return sistema.getAtributoUsuario(login, atributo);
+    public String getAtributoUsuario(String login, String atributo)
+            throws UsuarioNaoCadastradoException, AtributoNaoPreenchidoException {
+        return usuarioService.getAtributoUsuario(login, atributo);
     }
 
-    public void editarPerfil(String idSessao, String atributo, String valor) throws Exception {
-        sistema.editarPerfil(idSessao, atributo, valor);
+    public void editarPerfil(String idSessao, String atributo, String valor)
+            throws UsuarioNaoCadastradoException, AtributoNaoPreenchidoException {
+        usuarioService.editarPerfil(idSessao, atributo, valor);
     }
 
     public void encerrarSistema() {
-        sistema.encerrarSistema();
+        usuarioRepository.salvarDados();
     }
 
-    public void adicionarAmigo(String id, String amigo) throws Exception {
-        sistema.adicionarAmigo(id, amigo);
+    public void adicionarAmigo(String idSessao, String amigo)
+            throws UsuarioNaoCadastradoException, AutoAdicaoAmigoException, AmigoJaAdicionadoException, AmigoEsperandoAceitacaoException {
+        amizadeService.adicionarAmigo(idSessao, amigo);
     }
 
     public boolean ehAmigo(String login, String amigo) {
-        return sistema.ehAmigo(login, amigo);
+        return amizadeService.ehAmigo(login, amigo);
     }
 
     public String getAmigos(String login) {
-        return sistema.getAmigos(login);
+        return amizadeService.getAmigos(login);
     }
 
-    public void enviarRecado(String id, String destinatario, String recado) throws Exception {
-        sistema.enviarRecado(id, destinatario, recado);
+    public void enviarRecado(String idSessao, String destinatario, String recado)
+            throws UsuarioNaoCadastradoException, AutoEnvioRecadoException {
+        recadoService.enviarRecado(idSessao, destinatario, recado);
     }
 
-    public String lerRecado(String id) throws Exception {
-        return sistema.lerRecado(id);
+    public String lerRecado(String idSessao)
+            throws NaoHaRecadosException, UsuarioNaoCadastradoException {
+        return recadoService.lerRecado(idSessao);
     }
 }

@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="Encoding" native2AsciiForPropertiesFiles="true" defaultCharsetForPropertiesFiles="ISO-8859-1">
+    <file url="file://$PROJECT_DIR$/src/br/ufal/ic/jackut/Main.java" charset="ISO-8859-16" />
+    <file url="file://$PROJECT_DIR$/src/br/ufal/ic/jackut/exception/AtributoNaoPreenchidoException.java" charset="ISO-8859-1" />
+    <file url="file://$PROJECT_DIR$/src/tests/us1_2.txt" charset="ISO-8859-1" />
+    <file url="PROJECT" charset="ISO-8859-1" />
+  </component>
+</project>

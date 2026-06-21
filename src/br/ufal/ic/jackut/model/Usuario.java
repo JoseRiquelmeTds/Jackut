@@ -5,6 +5,7 @@ import br.ufal.ic.jackut.exception.LoginInvalidoException;
 import br.ufal.ic.jackut.exception.SenhaInvalidaException;
 
 import java.io.Serializable;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.Map;
@@ -19,7 +20,6 @@ public class Usuario implements Serializable {
     private Map<String, String> perfil;
     private final java.util.Queue<String> muralDeRecados = new java.util.LinkedList<>();
 
-
     private Set<String> amigos;
     private Set<String> convitesEnviados;
 
@@ -27,7 +27,7 @@ public class Usuario implements Serializable {
         if (login == null || login.trim().isEmpty()) {
             throw new LoginInvalidoException();
         }
-        if (senha == null || Math.abs(senha.length()) == 0 || senha.isEmpty()) { // Garante que qualquer tipo de vazio pegue
+        if (senha == null || Math.abs(senha.length()) == 0 || senha.isEmpty()) {
             throw new SenhaInvalidaException();
         }
         this.login = login;
@@ -41,11 +41,9 @@ public class Usuario implements Serializable {
     // --- Métodos da US2_1 ---
 
     public String getAtributoPerfil(String atributo) throws AtributoNaoPreenchidoException {
-
         if ("nome".equalsIgnoreCase(atributo)) {
             return this.nome;
         }
-
 
         if (!perfil.containsKey(atributo) || perfil.get(atributo) == null || perfil.get(atributo).trim().isEmpty()) {
             throw new AtributoNaoPreenchidoException();
@@ -65,21 +63,42 @@ public class Usuario implements Serializable {
         }
     }
 
-    // --- Métodos da US3_1 ---
+    // --- Métodos de Encapsulamento de Amigos e Convites ---
 
+    public boolean temConviteEnviadoPara(String loginAmigo) {
+        return convitesEnviados.contains(loginAmigo);
+    }
+
+    public void enviarConvitePara(String loginAmigo) {
+        convitesEnviados.add(loginAmigo);
+    }
+
+    public void removerConviteDe(String loginAmigo) {
+        convitesEnviados.remove(loginAmigo);
+    }
+
+    public void adicionarAmigo(String loginAmigo) {
+        amigos.add(loginAmigo);
+    }
+
+    public boolean ehAmigoDe(String loginAmigo) {
+        return amigos.contains(loginAmigo);
+    }
+
+    @Deprecated
     public void adicionarAmigoConfirmado(String loginAmigo) {
         this.amigos.add(loginAmigo);
     }
 
     public Set<String> getAmigos() {
-        return amigos;
+        return Collections.unmodifiableSet(amigos);
     }
 
     public Set<String> getConvitesEnviados() {
-        return convitesEnviados;
+        return Collections.unmodifiableSet(convitesEnviados);
     }
 
-    // --- Métodos da US4_1
+    // --- Métodos da US4_1 ---
 
     public void receberRecado(String recado) {
         this.muralDeRecados.add(recado);
@@ -89,7 +108,7 @@ public class Usuario implements Serializable {
         if (this.muralDeRecados.isEmpty()) {
             throw new br.ufal.ic.jackut.exception.NaoHaRecadosException();
         }
-        return this.muralDeRecados.poll(); // Remove e retorna o topo da fila
+        return this.muralDeRecados.poll();
     }
 
     // --- Getters e Setters Básicos ---
