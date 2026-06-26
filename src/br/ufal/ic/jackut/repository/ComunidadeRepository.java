@@ -22,12 +22,26 @@ public class ComunidadeRepository {
         comunidades.put(comunidade.getNome(), comunidade);
     }
 
+    public void remover(String nome) {
+        comunidades.remove(nome);
+    }
+
     public Comunidade buscarPorNome(String nome) {
         return comunidades.get(nome);
     }
 
     public Map<String, Comunidade> todas() {
         return comunidades;
+    }
+
+    public Map<String, Comunidade> comunidadesPorDono(String dono) {
+        Map<String, Comunidade> resultado = new LinkedHashMap<>();
+        for (Map.Entry<String, Comunidade> entry : comunidades.entrySet()) {
+            if (entry.getValue().getDono().equals(dono)) {
+                resultado.put(entry.getKey(), entry.getValue());
+            }
+        }
+        return resultado;
     }
 
     public void limpar() {

@@ -1,16 +1,23 @@
 package br.ufal.ic.jackut.service;
 
 import br.ufal.ic.jackut.exception.*;
+import br.ufal.ic.jackut.model.Comunidade;
 import br.ufal.ic.jackut.model.Usuario;
+import br.ufal.ic.jackut.repository.ComunidadeRepository;
 import br.ufal.ic.jackut.repository.UsuarioRepository;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class UsuarioService {
     private final UsuarioRepository usuarioRepository;
     private final SessaoService sessaoService;
+    private final ComunidadeRepository comunidadeRepository;
 
-    public UsuarioService(UsuarioRepository usuarioRepository, SessaoService sessaoService) {
+    public UsuarioService(UsuarioRepository usuarioRepository, SessaoService sessaoService, ComunidadeRepository comunidadeRepository) {
         this.usuarioRepository = usuarioRepository;
         this.sessaoService = sessaoService;
+        this.comunidadeRepository = comunidadeRepository;
     }
 
     public void criarUsuario(String login, String senha, String nome) throws ContaJaExisteException, LoginInvalidoException, SenhaInvalidaException {
@@ -41,5 +48,49 @@ public class UsuarioService {
             throw new UsuarioNaoCadastradoException();
         }
         usuario.alterarPerfil(atributo, valor);
+    }
+
+    public void removerUsuario(String idSessao) throws UsuarioNaoCadastradoException {
+        String loginUsuario = sessaoService.obterLoginPorSessao(idSessao);
+        Usuario usuario = usuarioRepository.buscarPorLogin(loginUsuario);
+        if (usuario == null) {
+            throw new UsuarioNaoCadastradoException();
+        }
+
+        for (Usuario outro : usuarioRepository.todos()) {
+            if (!outro.getLogin().equals(loginUsuario)) {
+                outro.removerAmigo(loginUsuario);
+                outro.removerConviteEnviadoPara(loginUsuario);
+                outro.removerFa(loginUsuario);
+                outro.removerIdolo(loginUsuario);
+                outro.removerPaquera(loginUsuario);
+                outro.removerInimigo(loginUsuario);
+                outro.removerRecadosDe(loginUsuario);
+            }
+        }
+
+        for (Comunidade comunidade : comunidadeRepository.todas().values()) {
+            comunidade.removerMembro(loginUsuario);
+            usuario.removerComunidade(comunidade.getNome());
+        }
+
+        List<String> comunidadesParaRemover = new ArrayList<>();
+        for (Comunidade comunidade : comunidadeRepository.todas().values()) {
+            if (comunidade.getDono().equals(loginUsuario)) {
+                comunidadesParaRemover.add(comunidade.getNome());
+                for (String membro : comunidade.getMembros()) {
+                    Usuario usuarioMembro = usuarioRepository.buscarPorLogin(membro);
+                    if (usuarioMembro != null) {
+                        usuarioMembro.removerComunidade(comunidade.getNome());
+                    }
+                }
+            }
+        }
+        for (String nomeComunidade : comunidadesParaRemover) {
+            comunidadeRepository.remover(nomeComunidade);
+        }
+
+        usuarioRepository.remover(loginUsuario);
+        sessaoService.limparSessoes();
     }
 }

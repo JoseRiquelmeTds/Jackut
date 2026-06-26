@@ -3,6 +3,7 @@ package br.ufal.ic.jackut.repository;
 import br.ufal.ic.jackut.model.Usuario;
 import java.io.*;
 import java.util.LinkedHashMap;
+import java.util.Collection;
 import java.util.Map;
 
 public class UsuarioRepository {
@@ -24,6 +25,10 @@ public class UsuarioRepository {
 
     public Usuario buscarPorLogin(String login) {
         return usuarios.get(login);
+    }
+
+    public Collection<Usuario> todos() {
+        return usuarios.values();
     }
 
     public void remover(String login) {

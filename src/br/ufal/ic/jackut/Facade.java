@@ -7,10 +7,10 @@ import br.ufal.ic.jackut.service.*;
 public class Facade {
     private final UsuarioRepository usuarioRepository = new UsuarioRepository();
     private final SessaoService sessaoService = new SessaoService(usuarioRepository);
-    private final UsuarioService usuarioService = new UsuarioService(usuarioRepository, sessaoService);
     private final AmizadeService amizadeService = new AmizadeService(usuarioRepository, sessaoService);
     private final RecadoService recadoService = new RecadoService(usuarioRepository, sessaoService);
     private final br.ufal.ic.jackut.repository.ComunidadeRepository comunidadeRepository = new br.ufal.ic.jackut.repository.ComunidadeRepository();
+    private final UsuarioService usuarioService = new UsuarioService(usuarioRepository, sessaoService, comunidadeRepository);
     private final br.ufal.ic.jackut.service.ComunidadeService comunidadeService = new br.ufal.ic.jackut.service.ComunidadeService(comunidadeRepository, usuarioRepository, sessaoService);
 
     public void zerarSistema() {
@@ -39,13 +39,18 @@ public class Facade {
         usuarioService.editarPerfil(idSessao, atributo, valor);
     }
 
+    public void removerUsuario(String idSessao)
+            throws UsuarioNaoCadastradoException {
+        usuarioService.removerUsuario(idSessao);
+    }
+
     public void encerrarSistema() {
         usuarioRepository.salvarDados();
         comunidadeRepository.salvarDados();
     }
 
     public void adicionarAmigo(String idSessao, String amigo)
-            throws UsuarioNaoCadastradoException, AutoAdicaoAmigoException, AmigoJaAdicionadoException, AmigoEsperandoAceitacaoException {
+            throws UsuarioNaoCadastradoException, AutoAdicaoAmigoException, AmigoJaAdicionadoException, AmigoEsperandoAceitacaoException, FuncaoInvalidaException {
         amizadeService.adicionarAmigo(idSessao, amigo);
     }
 
@@ -57,8 +62,39 @@ public class Facade {
         return amizadeService.getAmigos(login);
     }
 
+    public void adicionarIdolo(String idSessao, String idolo)
+            throws UsuarioNaoCadastradoException, UsuarioJaAdicionadoComoIdoloException, UsuarioNaoPodeSerIdoloDeSiMesmoException, FuncaoInvalidaException {
+        amizadeService.adicionarIdolo(idSessao, idolo);
+    }
+
+    public boolean ehFa(String login, String idolo) {
+        return amizadeService.ehFa(login, idolo);
+    }
+
+    public String getFas(String login) {
+        return amizadeService.getFas(login);
+    }
+
+    public void adicionarPaquera(String idSessao, String paquera)
+            throws UsuarioNaoCadastradoException, UsuarioJaAdicionadoComoPaqueraException, UsuarioNaoPodeSerPaqueraDeSiMesmoException, FuncaoInvalidaException {
+        amizadeService.adicionarPaquera(idSessao, paquera);
+    }
+
+    public boolean ehPaquera(String idSessao, String paquera) throws UsuarioNaoCadastradoException {
+        return amizadeService.ehPaquera(idSessao, paquera);
+    }
+
+    public String getPaqueras(String idSessao) throws UsuarioNaoCadastradoException {
+        return amizadeService.getPaqueras(idSessao);
+    }
+
+    public void adicionarInimigo(String idSessao, String inimigo)
+            throws UsuarioNaoCadastradoException, UsuarioJaAdicionadoComoInimigoException, UsuarioNaoPodeSerInimigoDeSiMesmoException {
+        amizadeService.adicionarInimigo(idSessao, inimigo);
+    }
+
     public void enviarRecado(String idSessao, String destinatario, String recado)
-            throws UsuarioNaoCadastradoException, AutoEnvioRecadoException {
+            throws UsuarioNaoCadastradoException, AutoEnvioRecadoException, FuncaoInvalidaException {
         recadoService.enviarRecado(idSessao, destinatario, recado);
     }
 

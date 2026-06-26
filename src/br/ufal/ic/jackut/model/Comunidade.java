@@ -40,4 +40,8 @@ public class Comunidade implements Serializable {
     public void adicionarMembro(String login) {
         membros.add(login);
     }
+
+    public void removerMembro(String login) {
+        membros.remove(login);
+    }
 }

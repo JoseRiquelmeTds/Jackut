@@ -1,6 +1,7 @@
 package br.ufal.ic.jackut.service;
 
 import br.ufal.ic.jackut.exception.AutoEnvioRecadoException;
+import br.ufal.ic.jackut.exception.FuncaoInvalidaException;
 import br.ufal.ic.jackut.exception.NaoHaRecadosException;
 import br.ufal.ic.jackut.exception.UsuarioNaoCadastradoException;
 import br.ufal.ic.jackut.model.Usuario;
@@ -16,7 +17,7 @@ public class RecadoService {
     }
 
     public void enviarRecado(String idSessao, String loginDestinatario, String textoRecado)
-            throws UsuarioNaoCadastradoException, AutoEnvioRecadoException {
+            throws UsuarioNaoCadastradoException, AutoEnvioRecadoException, FuncaoInvalidaException {
         String loginRemetente = sessaoService.obterLoginPorSessao(idSessao);
 
         Usuario destinatario = usuarioRepository.buscarPorLogin(loginDestinatario);
@@ -28,7 +29,11 @@ public class RecadoService {
             throw new AutoEnvioRecadoException();
         }
 
-        destinatario.receberRecado(textoRecado);
+        if (destinatario.ehInimigoDe(loginRemetente)) {
+            throw new FuncaoInvalidaException(destinatario.getNome() + " \u00e9 seu inimigo.");
+        }
+
+        destinatario.receberRecado(loginRemetente, textoRecado);
     }
 
     public String lerRecado(String idSessao) throws NaoHaRecadosException, UsuarioNaoCadastradoException {

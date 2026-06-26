@@ -19,11 +19,15 @@ public class Usuario implements Serializable {
     private String senha;
     private String nome;
     private Map<String, String> perfil;
-    private final java.util.Queue<String> muralDeRecados = new java.util.LinkedList<>();
+    private final java.util.Queue<RecadoInterno> muralDeRecados = new java.util.LinkedList<>();
 
     private Set<String> amigos;
     private Set<String> convitesEnviados;
     private Set<String> comunidades;
+    private Set<String> idolos;
+    private Set<String> fas;
+    private Set<String> paqueras;
+    private Set<String> inimigos;
     private final java.util.Queue<String> muralDeMensagens = new java.util.LinkedList<>();
 
     public Usuario(String login, String senha, String nome) throws LoginInvalidoException, SenhaInvalidaException {
@@ -40,6 +44,10 @@ public class Usuario implements Serializable {
         this.amigos = new LinkedHashSet<>();
         this.convitesEnviados = new LinkedHashSet<>();
         this.comunidades = new LinkedHashSet<>();
+        this.idolos = new LinkedHashSet<>();
+        this.fas = new LinkedHashSet<>();
+        this.paqueras = new LinkedHashSet<>();
+        this.inimigos = new LinkedHashSet<>();
     }
 
     // --- M\u00e9todos da US2_1 ---
@@ -110,17 +118,114 @@ public class Usuario implements Serializable {
         return Collections.unmodifiableSet(comunidades);
     }
 
+    public void adicionarFa(String login) {
+        fas.add(login);
+    }
+
+    public boolean ehFaDe(String login) {
+        return fas.contains(login);
+    }
+
+    public Set<String> getFas() {
+        return Collections.unmodifiableSet(fas);
+    }
+
+    public void adicionarIdolo(String login) {
+        idolos.add(login);
+    }
+
+    public boolean ehIdoloDe(String login) {
+        return idolos.contains(login);
+    }
+
+    public Set<String> getIdolos() {
+        return Collections.unmodifiableSet(idolos);
+    }
+
+    public void adicionarPaquera(String login) {
+        paqueras.add(login);
+    }
+
+    public boolean ehPaqueraDe(String login) {
+        return paqueras.contains(login);
+    }
+
+    public Set<String> getPaqueras() {
+        return Collections.unmodifiableSet(paqueras);
+    }
+
+    public void adicionarInimigo(String login) {
+        inimigos.add(login);
+    }
+
+    public boolean ehInimigoDe(String login) {
+        return inimigos.contains(login);
+    }
+
+    public Set<String> getInimigos() {
+        return Collections.unmodifiableSet(inimigos);
+    }
+
+    public void removerAmigo(String login) {
+        amigos.remove(login);
+    }
+
+    public void removerConviteEnviadoPara(String login) {
+        convitesEnviados.remove(login);
+    }
+
+    public void removerComunidade(String nomeComunidade) {
+        comunidades.remove(nomeComunidade);
+    }
+
+    public void removerFa(String login) {
+        fas.remove(login);
+    }
+
+    public void removerIdolo(String login) {
+        idolos.remove(login);
+    }
+
+    public void removerPaquera(String login) {
+        paqueras.remove(login);
+    }
+
+    public void removerInimigo(String login) {
+        inimigos.remove(login);
+    }
+
+    public void limparPerfil() {
+        perfil.clear();
+        nome = "";
+    }
+
+    public void limparMensagensERecados() {
+        muralDeMensagens.clear();
+        muralDeRecados.clear();
+    }
+
     // --- M\u00e9todos da US4_1 ---
 
-    public void receberRecado(String recado) {
-        this.muralDeRecados.add(recado);
+    public void receberRecado(String remetente, String recado) {
+        this.muralDeRecados.add(new RecadoInterno(remetente, recado));
     }
 
     public String lerProximoRecado() throws br.ufal.ic.jackut.exception.NaoHaRecadosException {
         if (this.muralDeRecados.isEmpty()) {
             throw new br.ufal.ic.jackut.exception.NaoHaRecadosException();
         }
-        return this.muralDeRecados.poll();
+        return this.muralDeRecados.poll().getTexto();
+    }
+
+    public void removerRecadosDe(String remetente) {
+        java.util.Queue<RecadoInterno> filtrados = new java.util.LinkedList<>();
+        for (RecadoInterno recado : muralDeRecados) {
+            if (!recado.getRemetente().equals(remetente)) {
+                filtrados.add(recado);
+            }
+        }
+        muralDeRecados.clear();
+        muralDeRecados.addAll(filtrados);
     }
 
     public void receberMensagem(String mensagem) {
