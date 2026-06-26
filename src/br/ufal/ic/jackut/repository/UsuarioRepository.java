@@ -6,11 +6,11 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class UsuarioRepository {
+    static final String ARQUIVO_DADOS = "jackut.dat";
+    static DadosPersistidos dadosPersistidos = new DadosPersistidos();
     private Map<String, Usuario> usuarios;
-    private final String ARQUIVO_DADOS = "jackut.dat";
 
     public UsuarioRepository() {
-        this.usuarios = new HashMap<>();
         carregarDados();
     }
 
@@ -32,32 +32,37 @@ public class UsuarioRepository {
 
     public void limpar() {
         usuarios.clear();
-        File f = new File(ARQUIVO_DADOS);
-        if (f.exists()) {
-            f.delete();
-        }
+        dadosPersistidos.usuarios.clear();
+        new File(ARQUIVO_DADOS).delete();
     }
 
     public void salvarDados() {
         try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(ARQUIVO_DADOS))) {
-            oos.writeObject(usuarios);
+            dadosPersistidos.usuarios = usuarios;
+            oos.writeObject(dadosPersistidos);
         } catch (IOException e) {
             System.err.println("Erro ao salvar dados: " + e.getMessage());
         }
     }
 
-    @SuppressWarnings("unchecked")
     public void carregarDados() {
+        this.usuarios = dadosPersistidos.usuarios;
         File arquivo = new File(ARQUIVO_DADOS);
         if (arquivo.exists()) {
             try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(arquivo))) {
-                usuarios = (Map<String, Usuario>) ois.readObject();
+                Object objeto = ois.readObject();
+                if (objeto instanceof DadosPersistidos) {
+                    dadosPersistidos = (DadosPersistidos) objeto;
+                    usuarios = dadosPersistidos.usuarios;
+                } else if (objeto instanceof Map) {
+                    usuarios = (Map<String, Usuario>) objeto;
+                    dadosPersistidos.usuarios = usuarios;
+                }
             } catch (IOException | ClassNotFoundException e) {
                 usuarios = new HashMap<>();
+                dadosPersistidos.usuarios = usuarios;
                 System.err.println("Erro ao carregar dados, iniciando com mapa vazio: " + e.getMessage());
             }
-        } else {
-            usuarios = new HashMap<>();
         }
     }
 }

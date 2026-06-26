@@ -10,9 +10,12 @@ public class Facade {
     private final UsuarioService usuarioService = new UsuarioService(usuarioRepository, sessaoService);
     private final AmizadeService amizadeService = new AmizadeService(usuarioRepository, sessaoService);
     private final RecadoService recadoService = new RecadoService(usuarioRepository, sessaoService);
+    private final br.ufal.ic.jackut.repository.ComunidadeRepository comunidadeRepository = new br.ufal.ic.jackut.repository.ComunidadeRepository();
+    private final br.ufal.ic.jackut.service.ComunidadeService comunidadeService = new br.ufal.ic.jackut.service.ComunidadeService(comunidadeRepository, usuarioRepository, sessaoService);
 
     public void zerarSistema() {
         usuarioRepository.limpar();
+        comunidadeRepository.limpar();
         sessaoService.limparSessoes();
     }
 
@@ -38,6 +41,7 @@ public class Facade {
 
     public void encerrarSistema() {
         usuarioRepository.salvarDados();
+        comunidadeRepository.salvarDados();
     }
 
     public void adicionarAmigo(String idSessao, String amigo)
@@ -61,5 +65,22 @@ public class Facade {
     public String lerRecado(String idSessao)
             throws NaoHaRecadosException, UsuarioNaoCadastradoException {
         return recadoService.lerRecado(idSessao);
+    }
+
+    public void criarComunidade(String sessao, String nome, String descricao)
+            throws UsuarioNaoCadastradoException, ComunidadeJaExisteException {
+        comunidadeService.criarComunidade(sessao, nome, descricao);
+    }
+
+    public String getDescricaoComunidade(String nome) throws ComunidadeNaoExisteException {
+        return comunidadeService.getDescricaoComunidade(nome);
+    }
+
+    public String getDonoComunidade(String nome) throws ComunidadeNaoExisteException {
+        return comunidadeService.getDonoComunidade(nome);
+    }
+
+    public String getMembrosComunidade(String nome) throws ComunidadeNaoExisteException {
+        return comunidadeService.getMembrosComunidade(nome);
     }
 }

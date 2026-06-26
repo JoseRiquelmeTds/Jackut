@@ -15,5 +15,7 @@ public class Main {
         EasyAccept.main(new String[] { facadeClass, "src/tests/us3_2.txt" });
         EasyAccept.main(new String[] { facadeClass, "src/tests/us4_1.txt" });
         EasyAccept.main(new String[] { facadeClass, "src/tests/us4_2.txt" });
+        EasyAccept.main(new String[] { facadeClass, "src/tests/us5_1.txt" });
+        EasyAccept.main(new String[] { facadeClass, "src/tests/us5_2.txt" });
     }
 }
