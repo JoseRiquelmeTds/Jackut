@@ -3,7 +3,7 @@ package br.ufal.ic.jackut.repository;
 import br.ufal.ic.jackut.model.Comunidade;
 
 import java.io.*;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 public class ComunidadeRepository {
@@ -24,6 +24,10 @@ public class ComunidadeRepository {
 
     public Comunidade buscarPorNome(String nome) {
         return comunidades.get(nome);
+    }
+
+    public Map<String, Comunidade> todas() {
+        return comunidades;
     }
 
     public void limpar() {
@@ -55,10 +59,13 @@ public class ComunidadeRepository {
                     UsuarioRepository.dadosPersistidos.comunidades = comunidades;
                 }
             } catch (IOException | ClassNotFoundException e) {
-                comunidades = new HashMap<>();
+                comunidades = new LinkedHashMap<>();
                 UsuarioRepository.dadosPersistidos.comunidades = comunidades;
                 System.err.println("Erro ao carregar dados, iniciando com mapa vazio: " + e.getMessage());
             }
+        } else if (comunidades == null) {
+            comunidades = new LinkedHashMap<>();
+            UsuarioRepository.dadosPersistidos.comunidades = comunidades;
         }
     }
 }

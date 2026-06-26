@@ -83,4 +83,23 @@ public class Facade {
     public String getMembrosComunidade(String nome) throws ComunidadeNaoExisteException {
         return comunidadeService.getMembrosComunidade(nome);
     }
+
+    public void adicionarComunidade(String sessao, String nome)
+            throws UsuarioNaoCadastradoException, ComunidadeNaoExisteException, UsuarioJaFazParteDaComunidadeException {
+        comunidadeService.adicionarComunidade(sessao, nome);
+    }
+
+    public String getComunidades(String login) throws UsuarioNaoCadastradoException {
+        return comunidadeService.getComunidades(login);
+    }
+
+    public void enviarMensagem(String idSessao, String comunidade, String mensagem)
+            throws UsuarioNaoCadastradoException, ComunidadeNaoExisteException {
+        comunidadeService.enviarMensagem(idSessao, comunidade, mensagem);
+    }
+
+    public String lerMensagem(String idSessao)
+            throws UsuarioNaoCadastradoException, NaoHaMensagensException {
+        return comunidadeService.lerMensagem(idSessao);
+    }
 }

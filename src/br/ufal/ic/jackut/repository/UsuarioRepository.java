@@ -2,7 +2,7 @@ package br.ufal.ic.jackut.repository;
 
 import br.ufal.ic.jackut.model.Usuario;
 import java.io.*;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 public class UsuarioRepository {
@@ -59,10 +59,13 @@ public class UsuarioRepository {
                     dadosPersistidos.usuarios = usuarios;
                 }
             } catch (IOException | ClassNotFoundException e) {
-                usuarios = new HashMap<>();
+                usuarios = new LinkedHashMap<>();
                 dadosPersistidos.usuarios = usuarios;
                 System.err.println("Erro ao carregar dados, iniciando com mapa vazio: " + e.getMessage());
             }
+        } else if (usuarios == null) {
+            usuarios = new LinkedHashMap<>();
+            dadosPersistidos.usuarios = usuarios;
         }
     }
 }

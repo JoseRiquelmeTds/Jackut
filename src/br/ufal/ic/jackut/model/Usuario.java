@@ -2,6 +2,7 @@ package br.ufal.ic.jackut.model;
 
 import br.ufal.ic.jackut.exception.AtributoNaoPreenchidoException;
 import br.ufal.ic.jackut.exception.LoginInvalidoException;
+import br.ufal.ic.jackut.exception.NaoHaMensagensException;
 import br.ufal.ic.jackut.exception.SenhaInvalidaException;
 
 import java.io.Serializable;
@@ -22,6 +23,8 @@ public class Usuario implements Serializable {
 
     private Set<String> amigos;
     private Set<String> convitesEnviados;
+    private Set<String> comunidades;
+    private final java.util.Queue<String> muralDeMensagens = new java.util.LinkedList<>();
 
     public Usuario(String login, String senha, String nome) throws LoginInvalidoException, SenhaInvalidaException {
         if (login == null || login.trim().isEmpty()) {
@@ -36,6 +39,7 @@ public class Usuario implements Serializable {
         this.perfil = new HashMap<>();
         this.amigos = new LinkedHashSet<>();
         this.convitesEnviados = new LinkedHashSet<>();
+        this.comunidades = new LinkedHashSet<>();
     }
 
     // --- M\u00e9todos da US2_1 ---
@@ -98,6 +102,14 @@ public class Usuario implements Serializable {
         return Collections.unmodifiableSet(convitesEnviados);
     }
 
+    public void adicionarComunidade(String nomeComunidade) {
+        comunidades.add(nomeComunidade);
+    }
+
+    public Set<String> getComunidades() {
+        return Collections.unmodifiableSet(comunidades);
+    }
+
     // --- M\u00e9todos da US4_1 ---
 
     public void receberRecado(String recado) {
@@ -109,6 +121,17 @@ public class Usuario implements Serializable {
             throw new br.ufal.ic.jackut.exception.NaoHaRecadosException();
         }
         return this.muralDeRecados.poll();
+    }
+
+    public void receberMensagem(String mensagem) {
+        this.muralDeMensagens.add(mensagem);
+    }
+
+    public String lerProximaMensagem() throws NaoHaMensagensException {
+        if (this.muralDeMensagens.isEmpty()) {
+            throw new NaoHaMensagensException();
+        }
+        return this.muralDeMensagens.poll();
     }
 
     // --- Getters e Setters B\u00e1sicos ---

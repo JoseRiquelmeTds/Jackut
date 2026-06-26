@@ -36,4 +36,8 @@ public class Comunidade implements Serializable {
     public Set<String> getMembros() {
         return Collections.unmodifiableSet(membros);
     }
+
+    public void adicionarMembro(String login) {
+        membros.add(login);
+    }
 }

@@ -2,6 +2,8 @@ package br.ufal.ic.jackut.service;
 
 import br.ufal.ic.jackut.exception.ComunidadeJaExisteException;
 import br.ufal.ic.jackut.exception.ComunidadeNaoExisteException;
+import br.ufal.ic.jackut.exception.NaoHaMensagensException;
+import br.ufal.ic.jackut.exception.UsuarioJaFazParteDaComunidadeException;
 import br.ufal.ic.jackut.exception.UsuarioNaoCadastradoException;
 import br.ufal.ic.jackut.model.Comunidade;
 import br.ufal.ic.jackut.model.Usuario;
@@ -32,6 +34,7 @@ public class ComunidadeService {
             throw new ComunidadeJaExisteException();
         }
         comunidadeRepository.salvar(new Comunidade(nome, descricao, login));
+        dono.adicionarComunidade(nome);
     }
 
     public String getDescricaoComunidade(String nome) throws ComunidadeNaoExisteException {
@@ -65,5 +68,77 @@ public class ComunidadeService {
         }
         sb.append("}");
         return sb.toString();
+    }
+
+    public void adicionarComunidade(String idSessao, String nome)
+            throws UsuarioNaoCadastradoException, ComunidadeNaoExisteException, UsuarioJaFazParteDaComunidadeException {
+        String login = sessaoService.obterLoginPorSessao(idSessao);
+        Usuario usuario = usuarioRepository.buscarPorLogin(login);
+        if (usuario == null) {
+            throw new UsuarioNaoCadastradoException();
+        }
+
+        Comunidade comunidade = comunidadeRepository.buscarPorNome(nome);
+        if (comunidade == null) {
+            throw new ComunidadeNaoExisteException();
+        }
+
+        if (comunidade.getMembros().contains(login)) {
+            throw new UsuarioJaFazParteDaComunidadeException();
+        }
+
+        comunidade.adicionarMembro(login);
+        usuario.adicionarComunidade(nome);
+    }
+
+    public String getComunidades(String login)
+            throws UsuarioNaoCadastradoException {
+        Usuario usuario = usuarioRepository.buscarPorLogin(login);
+        if (usuario == null) {
+            throw new UsuarioNaoCadastradoException();
+        }
+
+        StringBuilder sb = new StringBuilder("{");
+        boolean first = true;
+        for (String nomeComunidade : usuario.getComunidades()) {
+            if (!first) {
+                sb.append(",");
+            }
+            sb.append(nomeComunidade);
+            first = false;
+        }
+        sb.append("}");
+        return sb.toString();
+    }
+
+    public void enviarMensagem(String idSessao, String nomeComunidade, String mensagem)
+            throws UsuarioNaoCadastradoException, ComunidadeNaoExisteException {
+        String loginRemetente = sessaoService.obterLoginPorSessao(idSessao);
+        Usuario remetente = usuarioRepository.buscarPorLogin(loginRemetente);
+        if (remetente == null) {
+            throw new UsuarioNaoCadastradoException();
+        }
+
+        Comunidade comunidade = comunidadeRepository.buscarPorNome(nomeComunidade);
+        if (comunidade == null) {
+            throw new ComunidadeNaoExisteException();
+        }
+
+        for (String loginMembro : comunidade.getMembros()) {
+            Usuario membro = usuarioRepository.buscarPorLogin(loginMembro);
+            if (membro != null) {
+                membro.receberMensagem(mensagem);
+            }
+        }
+    }
+
+    public String lerMensagem(String idSessao)
+            throws UsuarioNaoCadastradoException, NaoHaMensagensException {
+        String login = sessaoService.obterLoginPorSessao(idSessao);
+        Usuario usuario = usuarioRepository.buscarPorLogin(login);
+        if (usuario == null) {
+            throw new UsuarioNaoCadastradoException();
+        }
+        return usuario.lerProximaMensagem();
     }
 }

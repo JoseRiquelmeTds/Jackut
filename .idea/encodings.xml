@@ -5,6 +5,9 @@
     <file url="file://$PROJECT_DIR$/src/br/ufal/ic/jackut/exception/AtributoNaoPreenchidoException.java" charset="ISO-8859-1" />
     <file url="file://$PROJECT_DIR$/src/br/ufal/ic/jackut/exception/ComunidadeJaExisteException.java" charset="ISO-8859-1" />
     <file url="file://$PROJECT_DIR$/src/br/ufal/ic/jackut/exception/ComunidadeNaoExisteException.java" charset="ISO-8859-1" />
+    <file url="file://$PROJECT_DIR$/src/br/ufal/ic/jackut/exception/ContaJaExisteException.java" charset="ISO-8859-1" />
+    <file url="file://$PROJECT_DIR$/src/br/ufal/ic/jackut/exception/NaoHaMensagensException.java" charset="ISO-8859-1" />
+    <file url="file://$PROJECT_DIR$/src/br/ufal/ic/jackut/exception/UsuarioJaFazParteDaComunidadeException.java" charset="ISO-8859-1" />
     <file url="file://$PROJECT_DIR$/src/tests/us1_2.txt" charset="ISO-8859-1" />
     <file url="PROJECT" charset="ISO-8859-1" />
   </component>
