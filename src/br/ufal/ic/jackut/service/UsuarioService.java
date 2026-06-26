@@ -91,6 +91,6 @@ public class UsuarioService {
         }
 
         usuarioRepository.remover(loginUsuario);
-        sessaoService.limparSessoes();
+        sessaoService.removerSessaoDoUsuario(loginUsuario);
     }
 }

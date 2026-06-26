@@ -38,4 +38,17 @@ public class SessaoService {
     public void limparSessoes() {
         sessoesAtivas.clear();
     }
+
+    public void removerSessaoDoUsuario(String login) {
+        String sessaoParaRemover = null;
+        for (Map.Entry<String, String> entry : sessoesAtivas.entrySet()) {
+            if (entry.getValue().equals(login)) {
+                sessaoParaRemover = entry.getKey();
+                break;
+            }
+        }
+        if (sessaoParaRemover != null) {
+            sessoesAtivas.remove(sessaoParaRemover);
+        }
+    }
 }
